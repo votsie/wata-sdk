@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wata"
+version = "0.1.0"
+description = "Официальный неофициальный Python SDK для платёжной системы WATA (эквайринг и цифровые товары)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "WATA SDK contributors" }]
+keywords = ["wata", "payments", "acquiring", "sbp", "steam", "telegram-stars"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+dependencies = [
+    "httpx>=0.24",
+]
+
+[project.optional-dependencies]
+webhooks = ["cryptography>=41"]
+dev = [
+    "pytest>=7",
+    "pytest-asyncio>=0.21",
+    "respx>=0.20",
+    "cryptography>=41",
+]
+
+[project.urls]
+Homepage = "https://github.com/wata-pro/wata-sdk"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wata"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

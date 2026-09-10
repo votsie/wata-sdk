@@ -1,0 +1,47 @@
+# --- Секреты: репозиторий публичный ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# --- Node ---
+node_modules/
+node/dist/
+node/dist-test/
+*.tsbuildinfo
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+python/build/
+python/dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Go ---
+go/bin/
+*.exe
+*.test
+*.out
+
+# --- Java ---
+java/target/
+*.class
+
+# --- .NET ---
+dotnet/**/bin/
+dotnet/**/obj/
+*.user
+
+# --- Прочее ---
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
