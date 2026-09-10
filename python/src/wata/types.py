@@ -17,6 +17,13 @@ import dataclasses
 import enum
 from typing import Any, TypeVar, Union, get_args, get_origin, get_type_hints
 
+# Модуль стандартной библиотеки, а не соседний types.py: файл пакета называется
+# так же, и абсолютный импорт здесь обязателен.
+try:  # Python 3.10+
+    from types import UnionType  # type: ignore[attr-defined]
+except ImportError:  # pragma: no cover — на поддерживаемых версиях недостижимо
+    UnionType = None  # type: ignore[assignment]
+
 from ._casing import snake_to_camel
 
 # --------------------------------------------------------------------------
@@ -135,7 +142,17 @@ T = TypeVar("T")
 
 
 def _unwrap_optional(tp: Any) -> Any:
-    if get_origin(tp) is Union:
+    """Разворачивает ``X | None`` в ``X``.
+
+    Проверяются обе формы объединения. До Python 3.14 запись ``X | None``
+    давала ``types.UnionType``, а ``Optional[X]`` — ``typing.Union``, и это
+    разные значения ``get_origin``. Учитывать только одну форму значит тихо
+    не привести значение к enum на части версий Python — ошибка проявится
+    у пользователя, а не в тестах разработчика.
+    """
+
+    origin = get_origin(tp)
+    if origin is Union or (UnionType is not None and origin is UnionType):
         args = [a for a in get_args(tp) if a is not type(None)]
         if len(args) == 1:
             return args[0]

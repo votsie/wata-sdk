@@ -64,3 +64,32 @@ def test_sync_and_async_apis_expose_same_methods() -> None:
         async_methods = {n for n in vars(async_cls) if not n.startswith("_")}
         missing = sync_methods - async_methods
         assert not missing, f"{async_cls.__name__} не хватает методов: {sorted(missing)}"
+
+
+def test_optional_enum_fields_are_coerced_on_every_python() -> None:
+    """Поле вида `Enum | None` должно приводиться к enum, а не оставаться строкой.
+
+    До Python 3.14 запись ``X | None`` давала ``types.UnionType``, а не
+    ``typing.Union``; учёт только одной формы приводил к тому, что на 3.10–3.13
+    статус оставался обычной строкой. Тест фиксирует поведение независимо
+    от версии интерпретатора.
+    """
+
+    from wata.types import TransactionStatus, WebhookEvent, model_from_api
+
+    event = model_from_api(WebhookEvent, {"transactionStatus": "Paid"})
+
+    assert isinstance(event.transaction_status, TransactionStatus)
+    assert event.transaction_status.value == "Paid"
+
+
+def test_unknown_enum_value_survives_parsing() -> None:
+    """Незнакомое значение сервера сохраняется, а не роняет разбор."""
+
+    from wata.types import TransactionStatus, WebhookEvent, model_from_api
+
+    event = model_from_api(WebhookEvent, {"transactionStatus": "SomethingNew"})
+
+    assert event.transaction_status is not None
+    assert event.transaction_status.value == "SomethingNew"
+    assert event.transaction_status.is_known is False
