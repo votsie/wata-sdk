@@ -2,7 +2,7 @@ package pro.wata.sdk.digitalgoods.steam;
 
 import pro.wata.sdk.digitalgoods.RequestBodies;
 import pro.wata.sdk.digitalgoods.deposit.DepositClient;
-import DepositOrder;
+import pro.wata.sdk.digitalgoods.deposit.DepositOrder;
 import pro.wata.sdk.http.HttpTransport;
 
 import java.util.LinkedHashMap;
